@@ -10,7 +10,7 @@ const Header = () => {
 
       <div className='h-20 w-20 relative flex items-center'>
         <Image
-          src='/media/logoo.png'
+          src='/media/logo.png'
           alt='logo'
           priority
           fill
