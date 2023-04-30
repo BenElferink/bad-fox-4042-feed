@@ -11,6 +11,9 @@ const config = {
       fontFamily: {
         roboto: ['Roboto', ...defaultTheme.fontFamily.sans],
       },
+      dropShadow: {
+        logo: ['0 0 1.5px rgb(255 255 255 / 0.5)'],
+      },
     },
   },
   plugins: [],

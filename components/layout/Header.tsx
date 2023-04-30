@@ -15,7 +15,7 @@ const Header = () => {
           priority
           fill
           sizes='5rem'
-          className='object-contain rounded-full'
+          className='object-contain rounded-full drop-shadow-logo'
         />
       </div>
     </header>
