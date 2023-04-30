@@ -59,7 +59,7 @@ const Profile = () => {
       <Modal
         title={connecting ? '' : connected ? 'Connected' : 'Connect a Wallet'}
         open={openConnect}
-        onClose={() => setOpenConnect(false)}
+        onClose={() => (!connecting ? setOpenConnect(false) : null)}
         className='text-center'
       >
         {connecting ? (
@@ -133,7 +133,7 @@ const Profile = () => {
       <Modal
         title={profile ? 'Setup Profile' : 'Edit Profile'}
         open={openProfile}
-        onClose={() => setOpenProfile(false)}
+        onClose={() => (!loading ? setOpenProfile(false) : null)}
         className='text-center'
       >
         <div className='flex flex-col'>
