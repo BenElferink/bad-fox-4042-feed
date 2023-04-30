@@ -64,7 +64,7 @@ const Profile = () => {
         onClose={() => setOpenProfile(false)}
         className='text-center'
       >
-        <div className='flex flex-col min-w-[280px] w-[85%] md:w-[75%]'>Ja man :)</div>
+        <div className='flex flex-col min-w-[280px] w-[85%] md:w-[75%]'>In development...</div>
       </Modal>
     </Fragment>
   )
