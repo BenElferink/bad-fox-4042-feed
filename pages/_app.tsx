@@ -29,7 +29,7 @@ const App = ({ Component, pageProps }: AppProps) => {
       <WalletProvider>
         <Header />
 
-        <main className='w-screen min-h-screen bg-black bg-opacity-40'>
+        <main className='w-screen min-h-[calc(100vh-150px)] bg-black bg-opacity-40'>
           <Component {...pageProps} />
         </main>
 
