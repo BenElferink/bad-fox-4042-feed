@@ -5,6 +5,7 @@ import { Toaster } from 'react-hot-toast'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import { WalletProvider } from '@/contexts/WalletContext'
+import { ReRenderProvider } from '@/contexts/ReRenderContext'
 import '@/styles/globals.css'
 
 const App = ({ Component, pageProps }: AppProps) => {
@@ -30,7 +31,9 @@ const App = ({ Component, pageProps }: AppProps) => {
         <Header />
 
         <main className='w-screen min-h-[calc(100vh-150px)] bg-black bg-opacity-40'>
-          <Component {...pageProps} />
+          <ReRenderProvider>
+            <Component {...pageProps} />
+          </ReRenderProvider>
         </main>
 
         <Footer />

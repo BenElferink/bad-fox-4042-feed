@@ -1,4 +1,5 @@
 export type StakeKey = string
+export type MediaType = 'music' | 'image' | 'video' | '360 video'
 
 export interface PopulatedWallet {
   stakeKey: StakeKey
@@ -15,16 +16,29 @@ export interface Profile {
   pfp?: string
 }
 
+export interface Comment {
+  stakeKey: StakeKey
+  text: string
+}
+
 export interface FeedItem {
   id: string
+  timestamp: number
+  stakeKey: StakeKey
   text: string
   media: {
     type: string
-    urk: string
+    url: string
   }
   likes: StakeKey[]
-  comments: {
-    stakeKey: StakeKey
-    text: string
-  }[]
+  comments: Comment[]
+}
+
+export interface ExtendedComment extends Comment {
+  pfp?: string
+}
+
+export interface ExtendedFeedItem extends FeedItem {
+  pfp?: string
+  comments: ExtendedComment[]
 }

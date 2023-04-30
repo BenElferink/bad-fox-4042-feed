@@ -41,11 +41,12 @@ const Profile = () => {
   }
 
   useEffect(() => {
-    if (profile) {
+    if (connected && profile) {
       setProfileUname(profile.uname || '')
       setProfilePicture(profile.pfp || '')
+      setOpenConnect(false)
     }
-  }, [profile])
+  }, [connected, profile])
 
   return (
     <Fragment>
