@@ -5,7 +5,8 @@ export const FIREBASE_MESSAGING_SENDER_ID = process.env.NEXT_PUBLIC_FIREBASE_MES
 export const FIREBASE_PROJECT_ID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
 export const FIREBASE_STORAGE_BUCKET = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
 
-export const DB_PATH = '/tools/4042/feed'
+export const POSTS_DB_PATH = '/tools/4042/posts'
+export const PROFILES_DB_PATH = '/tools/4042/profiles'
 
 export const ADA_HANDLE_BADFOX4042 = 'f0ff48bbb7bbe9d59a40f1ce90e9e9d0ff5002ec48f232b49ca0fb9a626164666f7834303432'
 

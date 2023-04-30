@@ -1,10 +1,10 @@
 // import { firestore } from '@/utils/firebase'
-// import { DB_PATH } from '@/constants'
+// import { POSTS_DB_PATH } from '@/constants'
 // import type { FeedItem } from '@/@types'
 
 const CreatePost = () => {
   // const postFeedItem = async () => {
-  //   const collection = firestore.collection(DB_PATH)
+  //   const collection = firestore.collection(POSTS_DB_PATH)
   //   await collection.add({})
   // }
 

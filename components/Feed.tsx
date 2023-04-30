@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { firestore } from '@/utils/firebase'
-import { DB_PATH } from '@/constants'
+import { POSTS_DB_PATH } from '@/constants'
 import type { FeedItem } from '@/@types'
 
 const fetchFeed = async () => {
-  const collection = firestore.collection(DB_PATH)
+  const collection = firestore.collection(POSTS_DB_PATH)
   const collectionQuery = await collection.get()
 
   const docs = collectionQuery.docs.map((doc) => {

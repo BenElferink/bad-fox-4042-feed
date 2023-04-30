@@ -30,13 +30,13 @@ const Modal = (props: ModalProps) => {
     <div
       className={
         (!!open ? 'block' : 'hidden') +
-        ' w-screen h-screen bg-black bg-opacity-50 backdrop-blur-lg flex items-center justify-center fixed top-0 left-0 z-50'
+        ' w-screen h-screen bg-black bg-opacity-40 backdrop-blur-lg flex items-center justify-center fixed top-0 left-0 z-50'
       }
     >
       <div className='animate__animated animate__fadeIn'>
         <section
           className={
-            (noModal ? 'bg-transparent overflow-hidden' : 'bg-gray-800 overflow-auto') +
+            (noModal ? 'bg-transparent overflow-hidden' : 'bg-gray-800 border border-gray-500 overflow-auto') +
             ' relative flex flex-col items-center min-w-screen md:min-w-[420px] max-w-screen md:max-w-[90vw] w-full md:w-fit min-h-screen md:min-h-fit max-h-screen md:max-h-[90vh] p-4 md:rounded-3xl  ' +
             className
           }
