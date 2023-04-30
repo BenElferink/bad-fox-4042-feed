@@ -27,7 +27,7 @@ export interface FeedItem {
   stakeKey: StakeKey
   text: string
   media: {
-    type: string
+    type: MediaType
     url: string
   }
   likes: StakeKey[]
