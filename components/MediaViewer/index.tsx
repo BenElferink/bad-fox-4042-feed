@@ -1,5 +1,6 @@
-import { MediaType } from '@/@types'
-import React from 'react'
+'use client'
+import type { MediaType } from '@/@types'
+import Video360 from './Video360'
 
 const MediaViewer = (props: { type: MediaType; src: string }) => {
   const { type, src } = props
@@ -13,7 +14,7 @@ const MediaViewer = (props: { type: MediaType; src: string }) => {
       ) : type === 'video' ? (
         <video src={src} controls className='rounded-lg' />
       ) : type === '360 video' ? (
-        <video src={src} controls className='rounded-lg' />
+        <Video360 src={src} />
       ) : null}
     </div>
   )

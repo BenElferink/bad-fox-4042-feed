@@ -1,10 +1,12 @@
+import dynamic from 'next/dynamic'
 import { Fragment, useEffect, useState } from 'react'
 import { useReRender } from '@/contexts/ReRenderContext'
 import fetchFeed from '@/functions/fetchFeed'
 import fetchProfiles from '@/functions/fetchProfiles'
 import ProfilePicture from './ProfilePicture'
-import MediaViewer from './MediaViewer'
 import type { ExtendedFeedItem, Profile } from '@/@types'
+
+const MediaViewer = dynamic(() => import('./MediaViewer'), { ssr: false })
 
 const Feed = () => {
   const { reRender } = useReRender()
@@ -55,16 +57,13 @@ const Feed = () => {
         <p>No posts yet 🥲</p>
       ) : (
         feed.map((item) => (
-          <div
-            key={`post-${item.id}`}
-            className='flex w-[80vw] md:w-[500px] mb-4 p-2 rounded-xl bg-gray-400 bg-opacity-20'
-          >
+          <div key={`post-${item.id}`} className='flex w-[80vw] max-w-[800px] mb-4 p-2 rounded-xl bg-gray-400 bg-opacity-20'>
             <div className='mr-2'>
               <ProfilePicture src={item.pfp} size={50} />
               <p className='mt-1 text-xs text-center'>{getDateString(item.timestamp)}</p>
             </div>
 
-            <div className='w-full'>
+            <div className='w-full flex flex-col justify-center'>
               {item.text ? (
                 <p className='w-full mb-2 p-3 text-sm text-gray-200 rounded-lg bg-gray-400 bg-opacity-20'>
                   {item.text.split('\n').map((str, idx) => (
