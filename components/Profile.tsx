@@ -50,12 +50,21 @@ const Profile = () => {
 
   return (
     <Fragment>
-      <button
-        onClick={() => (connected ? setOpenProfile(true) : setOpenConnect(true))}
-        className='flex flex-row p-4 border border-gray-400 rounded-xl text-center text-sm hover:animate-pulse'
-      >
-        {connected ? 'Profile' : 'Connect'}
-      </button>
+      {!connected ? (
+        <button
+          onClick={() => setOpenConnect(true)}
+          className='flex flex-row p-4 border border-gray-400 rounded-xl text-center text-sm hover:animate-pulse'
+        >
+          Connect
+        </button>
+      ) : connected && (populatedWallet?.is4042 || populatedWallet?.isHolder) ? (
+        <button
+          onClick={() => setOpenProfile(true)}
+          className='flex flex-row p-4 border border-gray-400 rounded-xl text-center text-sm hover:animate-pulse'
+        >
+          Profile
+        </button>
+      ) : null}
 
       <Modal
         title={connecting ? '' : connected ? 'Connected' : 'Connect a Wallet'}
@@ -71,7 +80,7 @@ const Profile = () => {
           <div>
             <TextChip icon={KeyIcon} prefix='Stake Key' value={populatedWallet?.stakeKey || ''} />
 
-            {!profile ? (
+            {!profile && (populatedWallet?.is4042 || populatedWallet?.isHolder) ? (
               <div className='mt-4'>
                 <p>Setup your profile now, or later?</p>
                 <div className='mt-2 flex items-center justify-evenly'>
