@@ -1,65 +1,75 @@
-import { useEffect, useRef } from 'react'
-import { storage } from '@/utils/firebase'
+import { useMemo, useRef } from 'react'
+import { Canvas, useFrame, useThree } from 'react-three-fiber'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import * as THREE from 'three'
 
-// @ts-ignore
-import videojs from 'video.js'
-import 'video.js/dist/video-js.css'
+const VideoSphere = (props: { video: HTMLVideoElement; videoTexture: THREE.VideoTexture }) => {
+  const { video, videoTexture } = props
 
-import 'videojs-vr'
-import 'videojs-vr/dist/videojs-vr.js'
-import 'videojs-vr/dist/videojs-vr.css'
+  const sphereRef = useRef<THREE.Mesh<THREE.BufferGeometry, THREE.Material> | null>(null)
+  const videoRef = useRef<THREE.VideoTexture | null>(null)
+  const controlsRef = useRef<OrbitControls | null>(null)
+
+  const {
+    camera,
+    gl: { domElement },
+  } = useThree()
+
+  useFrame(() => {
+    if (videoRef.current && sphereRef.current) {
+      // @ts-ignore
+      sphereRef.current.material.map.needsUpdate = true
+    }
+
+    if (controlsRef.current) {
+      controlsRef.current.update()
+    }
+  })
+
+  useMemo(() => {
+    const controls = new OrbitControls(camera, domElement)
+    controls.enableDamping = true
+    controls.dampingFactor = 0.05
+    controls.enableZoom = false
+
+    controlsRef.current = controls
+    return () => {
+      controls.dispose()
+      controlsRef.current = null
+    }
+  }, [camera, domElement])
+
+  return (
+    <mesh ref={sphereRef}>
+      <sphereBufferGeometry args={[500, 60, 60]} />
+      <meshBasicMaterial map={videoTexture} side={THREE.BackSide} />
+      <videoTexture ref={videoRef} args={[video]} />
+    </mesh>
+  )
+}
 
 const Video360 = (props: { src: string }) => {
   const { src } = props
-  const videoRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    if (videoRef.current) {
-      const videoElement = document.createElement('video-js')
-      videoElement.classList.add('vjs-big-play-centered')
-      videoRef.current.appendChild(videoElement)
+  const video = useMemo(() => {
+    const vid = document.createElement('video')
+    vid.src = src.replace('https://firebasestorage.googleapis.com', '/storage')
+    vid.crossOrigin = 'anonymous'
+    vid.loop = true
+    vid.muted = true
+    vid.setAttribute('webkit-playsinline', 'true')
+    vid.setAttribute('playsinline', 'true')
+    vid.play()
+    return vid
+  }, [src])
 
-      const fileId = src?.split('%2F4042%2F')[1]?.split('?')[0]
-      if (fileId) {
-        storage
-          .ref(`/tools/4042/${fileId}`)
-          .getMetadata()
-          .then((metadata) => {
-            const type = metadata.contentType
-
-            const player = videojs(
-              videoElement,
-              {
-                autoplay: false,
-                muted: true,
-                controls: true,
-                responsive: true,
-                fluid: true,
-                sources: [
-                  {
-                    src,
-                    type,
-                  },
-                ],
-              },
-              () => {
-                videojs.log('player is ready')
-
-                const vrPlugin = player.vr({ projection: '360' })
-
-                vrPlugin.on('initialized', function () {
-                  videojs.log('VR is initialized')
-                })
-              }
-            )
-          })
-      }
-    }
-  }, [videoRef, src])
+  const videoTexture = useMemo(() => new THREE.VideoTexture(video), [video])
 
   return (
-    <div data-vjs-player>
-      <div ref={videoRef} />
+    <div className='w-full h-[420px]'>
+      <Canvas>
+        <VideoSphere video={video} videoTexture={videoTexture} />
+      </Canvas>
     </div>
   )
 }
