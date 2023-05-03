@@ -1,14 +1,15 @@
 'use client'
 import type { MediaType } from '@/@types'
 import Video360 from './Video360'
+import MusicPlayer from './MusicPlayer'
 
 const MediaViewer = (props: { type: MediaType; src: string }) => {
   const { type, src } = props
 
   return (
-    <div>
+    <div className='flex items-center justify-center'>
       {type === 'music' ? (
-        <audio src={src} controls />
+        <MusicPlayer src={src} />
       ) : type === 'image' ? (
         <img src={src} alt='' className='rounded-lg' />
       ) : type === 'video' ? (

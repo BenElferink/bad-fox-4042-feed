@@ -13,6 +13,7 @@ const config = {
       },
       dropShadow: {
         logo: ['0 0 1.5px rgb(255 255 255 / 0.5)'],
+        vrLogo: ['0px -1px 3px rgb(255 255 255 / 1)'],
       },
     },
   },

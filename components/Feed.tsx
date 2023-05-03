@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic'
 import { Fragment, useEffect, useState } from 'react'
-import { useReRender } from '@/contexts/ReRenderContext'
+import { useRender } from '@/contexts/RenderContext'
 import fetchFeed from '@/functions/fetchFeed'
 import fetchProfiles from '@/functions/fetchProfiles'
 import ProfilePicture from './ProfilePicture'
@@ -9,7 +9,7 @@ import type { ExtendedFeedItem, Profile } from '@/@types'
 const MediaViewer = dynamic(() => import('./MediaViewer'), { ssr: false })
 
 const Feed = () => {
-  const { reRender } = useReRender()
+  const { reRender } = useRender()
 
   const [loading, setLoading] = useState(false)
   const [feed, setFeed] = useState<ExtendedFeedItem[]>([])
@@ -57,7 +57,7 @@ const Feed = () => {
         <p>No posts yet 🥲</p>
       ) : (
         feed.map((item) => (
-          <div key={`post-${item.id}`} className='flex w-[80vw] max-w-[800px] mb-4 p-2 rounded-xl bg-gray-400 bg-opacity-20'>
+          <div key={`post-${item.id}`} className='flex w-[80vw] max-w-[690px] mb-4 p-2 rounded-xl bg-gray-400 bg-opacity-20'>
             <div className='mr-2'>
               <ProfilePicture src={item.pfp} size={50} />
               <p className='mt-1 text-xs text-center'>{getDateString(item.timestamp)}</p>

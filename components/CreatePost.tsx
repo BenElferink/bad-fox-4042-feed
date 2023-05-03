@@ -4,14 +4,14 @@ import { toast } from 'react-hot-toast'
 import { MusicalNoteIcon, PhotoIcon, VideoCameraIcon, ViewfinderCircleIcon } from '@heroicons/react/24/solid'
 import { firebase, firestore, storage } from '@/utils/firebase'
 import { useWallet } from '@/contexts/WalletContext'
-import { useReRender } from '@/contexts/ReRenderContext'
+import { useRender } from '@/contexts/RenderContext'
 import ProfilePicture from './ProfilePicture'
 import { POSTS_DB_PATH } from '@/constants'
 import type { MediaType } from '@/@types'
 
 const CreatePost = () => {
   const { populatedWallet, profile } = useWallet()
-  const { setReRender } = useReRender()
+  const { setReRender } = useRender()
 
   const [text, setText] = useState('')
   const [mediaType, setMediaType] = useState<MediaType | ''>('')

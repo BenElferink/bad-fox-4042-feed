@@ -15,7 +15,6 @@ const Modal = (props: ModalProps) => {
 
   useEffect(() => {
     if (!!open) {
-      window.scrollTo({ top: 0 })
       document.body.style.overflow = 'hidden'
     } else {
       document.body.style.overflow = ''
@@ -44,7 +43,7 @@ const Modal = (props: ModalProps) => {
         >
           {onClose ? (
             <button
-              className='w-6 h-6 rounded-full bg-gray-400 hover:bg-gray-300 text-gray-800 flex items-center justify-center absolute top-3 right-3'
+              className='w-6 h-6 rounded-full bg-gray-400 hover:bg-gray-300 text-gray-800 flex items-center justify-center absolute top-3 right-3 z-10'
               onClick={onClose}
             >
               &#10005;

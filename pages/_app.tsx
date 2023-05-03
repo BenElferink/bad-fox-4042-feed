@@ -5,7 +5,7 @@ import { Toaster } from 'react-hot-toast'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import { WalletProvider } from '@/contexts/WalletContext'
-import { ReRenderProvider } from '@/contexts/ReRenderContext'
+import { RenderProvider } from '@/contexts/RenderContext'
 import '@/styles/globals.css'
 
 const App = ({ Component, pageProps }: AppProps) => {
@@ -27,17 +27,15 @@ const App = ({ Component, pageProps }: AppProps) => {
       </Head>
 
       <Toaster />
-      <WalletProvider>
-        <Header />
-
-        <main className='w-screen min-h-[calc(100vh-150px)] bg-black bg-opacity-40'>
-          <ReRenderProvider>
+      <RenderProvider>
+        <WalletProvider>
+          <Header />
+          <main className='w-screen min-h-[calc(100vh-150px)] bg-black bg-opacity-40'>
             <Component {...pageProps} />
-          </ReRenderProvider>
-        </main>
-
-        <Footer />
-      </WalletProvider>
+          </main>
+          <Footer />
+        </WalletProvider>
+      </RenderProvider>
     </Fragment>
   )
 }
