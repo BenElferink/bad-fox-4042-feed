@@ -45,7 +45,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const [populatedWallet, setPopulatedWallet] = useState(ctxInit.populatedWallet)
   const [profile, setProfile] = useState(ctxInit.profile)
 
-  const connectWallet: (typeof ctxInit)['connectWallet'] = async (_walletName) => {
+  const connectWallet: typeof ctxInit['connectWallet'] = async (_walletName) => {
     if (connecting) return
 
     try {
