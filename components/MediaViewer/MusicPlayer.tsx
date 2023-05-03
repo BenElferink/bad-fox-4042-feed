@@ -53,6 +53,10 @@ const MusicPlayer = (props: { src: string }) => {
         barWidth: 1,
       })
 
+      _wave.on('finish', () => {
+        stop()
+      })
+
       _wave.load(src.replace('https://firebasestorage.googleapis.com', '/storage'))
       waveRef.current = _wave
       setMounted(true)
@@ -64,20 +68,6 @@ const MusicPlayer = (props: { src: string }) => {
       }
     }
   }, [waveRef, visualRef, userClicked, src])
-
-  useEffect(() => {
-    const _wave = waveRef.current
-
-    if (_wave && playing) {
-      const interval = setInterval(() => {
-        if (!waveRef.current?.isPlaying()) stop()
-      }, 1000)
-
-      return () => {
-        clearInterval(interval)
-      }
-    }
-  })
 
   return (
     <div className='w-full h-[130px] flex items-center'>
