@@ -1,8 +1,13 @@
 import dynamic from 'next/dynamic'
 import { Fragment, useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
-import { firestore, storage } from '@/utils/firebase'
-import { ChatBubbleLeftEllipsisIcon, HeartIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { firebase, firestore, storage } from '@/utils/firebase'
+import {
+  ChatBubbleLeftEllipsisIcon as ChatOutline,
+  HeartIcon as HeartOutline,
+  TrashIcon as TrashOutline,
+} from '@heroicons/react/24/outline'
+import { HeartIcon as HeartSolid } from '@heroicons/react/24/solid'
 import { useWallet } from '@/contexts/WalletContext'
 import { useRender } from '@/contexts/RenderContext'
 import fetchFeed from '@/functions/fetchFeed'
@@ -14,7 +19,7 @@ import type { ExtendedFeedItem, FeedItem, Profile } from '@/@types'
 const MediaViewer = dynamic(() => import('./MediaViewer'), { ssr: false })
 
 const Feed = () => {
-  const { reRender } = useRender()
+  const { reRender, setReRender } = useRender()
   const { populatedWallet } = useWallet()
 
   const [loading, setLoading] = useState(false)
@@ -31,9 +36,9 @@ const Feed = () => {
 
         setProfiles(_profiles)
         setFeed(
-          _feed.map((item) => ({
-            ...item,
-            pfp: _profiles.find((prof) => prof.stakeKey === item.stakeKey)?.pfp,
+          _feed.map((post) => ({
+            ...post,
+            pfp: _profiles.find((prof) => prof.stakeKey === post.stakeKey)?.pfp,
           }))
         )
       } catch (error: any) {
@@ -58,8 +63,20 @@ const Feed = () => {
   const likePost = async (postId: string) => {
     try {
       setLoading(true)
-      toast.success('Processing')
-      throw new Error('in development..!')
+      toast.loading('Processing')
+
+      const stakeKey = populatedWallet?.stakeKey || ''
+
+      const collection = firestore.collection(POSTS_DB_PATH)
+      const doc = await collection.doc(postId).get()
+      const alreadyLiked = !!(doc.data() as FeedItem).likes.find((sKey) => sKey === stakeKey)
+
+      const { FieldValue } = firebase.firestore
+      await collection.doc(postId).update({
+        likes: alreadyLiked ? FieldValue.arrayRemove(stakeKey) : FieldValue.arrayUnion(stakeKey),
+      })
+
+      setReRender((prev) => prev + 1)
 
       toast.dismiss()
       toast.success('Done')
@@ -74,7 +91,7 @@ const Feed = () => {
   const commentPost = async (postId: string) => {
     try {
       setLoading(true)
-      toast.success('Processing')
+      toast.loading('Processing')
       throw new Error('in development..!')
 
       toast.dismiss()
@@ -93,7 +110,7 @@ const Feed = () => {
         setLoading(true)
         toast.loading('Deleting...')
 
-        const post = feed.find((item) => item.id === postId) as FeedItem
+        const post = feed.find((post) => post.id === postId) as FeedItem
         const mediaUrl = post?.media?.url
 
         if (mediaUrl) {
@@ -104,7 +121,7 @@ const Feed = () => {
         const collection = firestore.collection(POSTS_DB_PATH)
         await collection.doc(postId).delete()
 
-        setFeed((prev) => prev.filter((item) => item.id !== postId))
+        setFeed((prev) => prev.filter((post) => post.id !== postId))
 
         toast.dismiss()
         toast.success('Deleted!')
@@ -126,62 +143,69 @@ const Feed = () => {
           <p>No posts yet 🥲</p>
         )
       ) : (
-        feed.map((item) => (
-          <div
-            key={`post-${item.id}`}
-            className='flex w-[80vw] max-w-[690px] mb-4 p-2 rounded-xl bg-gray-400 bg-opacity-20'
-          >
-            <div className='mr-2 w-[50px] flex flex-col items-center'>
-              <ProfilePicture src={item.pfp} size={50} />
-              <p className='mt-1 text-xs text-center'>{getDateString(item.timestamp)}</p>
-            </div>
+        feed.map((post) => {
+          const iLiked = post.likes.find((sKey) => sKey === populatedWallet?.stakeKey)
 
-            <div className='w-full flex flex-col justify-center'>
-              {item.text ? (
-                <p className='w-full mb-2 p-3 text-sm text-gray-200 rounded-lg bg-gray-400 bg-opacity-20'>
-                  {item.text.split('\n').map((str, idx) => (
-                    <Fragment key={`post-${item.id}-str-${idx}`}>
-                      {idx > 0 ? <br /> : null}
-                      {str}
-                    </Fragment>
-                  ))}
-                </p>
-              ) : null}
+          return (
+            <div
+              key={`post-${post.id}`}
+              className='flex w-[80vw] max-w-[690px] mb-4 p-2 rounded-xl bg-gray-400 bg-opacity-20'
+            >
+              <div className='mr-2 w-[50px] flex flex-col items-center'>
+                <ProfilePicture src={post.pfp} size={50} />
+                <p className='mt-1 text-xs text-center'>{getDateString(post.timestamp)}</p>
+              </div>
 
-              <MediaViewer type={item.media.type} src={item.media.url} />
+              <div className='w-full flex flex-col justify-center'>
+                {post.text ? (
+                  <p className='w-full mb-2 p-3 text-sm text-gray-200 rounded-lg bg-gray-400 bg-opacity-20'>
+                    {post.text.split('\n').map((str, idx) => (
+                      <Fragment key={`post-${post.id}-str-${idx}`}>
+                        {idx > 0 ? <br /> : null}
+                        {str}
+                      </Fragment>
+                    ))}
+                  </p>
+                ) : null}
 
-              <div className='flex items-center'>
-                <button
-                  disabled={loading}
-                  onClick={() => likePost(item.id)}
-                  className='flex items-center mt-2 mx-2 text-gray-400 hover:text-gray-200'
-                >
-                  <HeartIcon className='w-6 h-6' />
-                  <span className='ml-2'>{item.likes.length}</span>
-                </button>
+                <MediaViewer type={post.media.type} src={post.media.url} />
 
-                <button
-                  disabled={loading}
-                  onClick={() => commentPost(item.id)}
-                  className='flex items-center mt-2 mx-2 text-gray-400 hover:text-gray-200'
-                >
-                  <ChatBubbleLeftEllipsisIcon className='w-6 h-6' />
-                  <span className='ml-2'>{item.comments.length}</span>
-                </button>
-
-                {item.stakeKey === populatedWallet?.stakeKey ? (
+                <div className='flex items-center'>
                   <button
                     disabled={loading}
-                    onClick={() => deletePost(item.id)}
-                    className='flex items-center mt-2 mx-2 text-gray-400 hover:text-red-400 disabled:text-gray-400 disabled:opacity-50'
+                    onClick={() => likePost(post.id)}
+                    className={
+                      'flex items-center mt-2 mx-2 hover:text-gray-200 ' +
+                      (iLiked ? 'text-red-400' : 'text-gray-400')
+                    }
                   >
-                    <TrashIcon className='w-6 h-6' />
+                    {iLiked ? <HeartSolid className='w-6 h-6' /> : <HeartOutline className='w-6 h-6' />}
+                    <span className='ml-2'>{post.likes.length}</span>
                   </button>
-                ) : null}
+
+                  <button
+                    disabled={loading}
+                    onClick={() => commentPost(post.id)}
+                    className='flex items-center mt-2 mx-2 text-gray-400 hover:text-gray-200 '
+                  >
+                    <ChatOutline className='w-6 h-6' />
+                    <span className='ml-2'>{post.comments.length}</span>
+                  </button>
+
+                  {post.stakeKey === populatedWallet?.stakeKey ? (
+                    <button
+                      disabled={loading}
+                      onClick={() => deletePost(post.id)}
+                      className='flex items-center mt-2 mx-2 text-gray-400 hover:text-gray-200 disabled:text-gray-400 disabled:opacity-50'
+                    >
+                      <TrashOutline className='w-6 h-6' />
+                    </button>
+                  ) : null}
+                </div>
               </div>
             </div>
-          </div>
-        ))
+          )
+        })
       )}
     </div>
   )
