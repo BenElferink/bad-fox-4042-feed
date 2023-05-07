@@ -17,6 +17,7 @@ export interface Profile {
 }
 
 export interface Comment {
+  timestamp: number
   stakeKey: StakeKey
   text: string
 }
@@ -35,6 +36,7 @@ export interface FeedItem {
 }
 
 export interface ExtendedComment extends Comment {
+  uname?: string
   pfp?: string
 }
 
