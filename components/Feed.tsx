@@ -343,7 +343,7 @@ const Feed = () => {
               <div className='w-full'>
                 <p className='pl-2 mb-2 max-w-[150px] text-start truncate'>{comm.uname || populatedWallet?.stakeKey}</p>
 
-                <p className='p-2 text-sm text-start text-gray-200 rounded-lg bg-gray-400 bg-opacity-20'>
+                <p className='max-w-[350px] p-2 text-sm text-start break-words text-gray-200 rounded-lg bg-gray-400 bg-opacity-20'>
                   {comm.text.split('\n').map((str, i) => (
                     <Fragment key={`comment-${idx}-str-${i}`}>
                       {i > 0 ? <br /> : null}
